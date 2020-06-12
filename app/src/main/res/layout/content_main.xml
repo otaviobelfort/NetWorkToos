@@ -80,18 +80,11 @@
                 />
 
         </LinearLayout>
-        <EditText
-            android:id="@+id/editMacAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Teste MAC"
-            android:inputType="textNoSuggestions"/>
-        <ListView
-            android:id="@+id/listView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
-        </ListView>
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
 
     </LinearLayout>
 
@@ -111,5 +104,26 @@
             android:layout_height="wrap_content"
             />
     </ScrollView>
+
+    <TextView
+        android:id="@+id/editMacAddress"
+        android:layout_width="384dp"
+        android:layout_height="71dp"
+        android:hint="Teste MAC" />
+    <Button
+        android:id="@+id/BTlista"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lista">
+
+    </Button>
+    <ListView
+        android:id="@+id/listIPMAC"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </ListView>
+
+
 
 </LinearLayout>

@@ -10,8 +10,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -39,8 +41,9 @@ public class MainActivity extends AppCompatActivity {
     private Button wolButton;
     private Button portScanButton;
     private Button subnetDevicesButton;
+    ArrayList<Placas> getList;
 
-    private EditText editMacddress;
+    private TextView listadeDispositivos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         portScanButton = findViewById(R.id.portScanButton);
         subnetDevicesButton = findViewById(R.id.subnetDevicesButton);
 
-        editMacddress = findViewById(R.id.editMacAddress);
+        listadeDispositivos = findViewById(R.id.editMacAddress);
 
 
         // GET IP
@@ -66,11 +69,21 @@ public class MainActivity extends AppCompatActivity {
         //String ipAddress = editIpAddress.getText().toString();
 
         //String macAddress = ARPInfo.getMACFromIPAddress(ipAddress);
-        editIpAddress.setText(ipAddress.getHostAddress());
-        editMacddress.setText(" Vazio o MAC");
+        //editIpAddress.setText(ipAddress.getHostAddress());
+        //editMacddress.setText(" Vazio o MAC");
+
+        //getList = findSubnetDevices1();
+
+
+        //
+        //listadeDispositivos.setText(String.valueOf(getList.size()));
 
 
 
+        //finishe.size();
+
+
+        //listadeDispositivos.setText(String.valueOf(finishe.get(0).ip));
         // ----
         if (ipAddress != null){
             // SET IP -> editIpAddress
@@ -80,6 +93,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+        Button BTlista = (Button) findViewById(R.id.BTlista);
+        BTlista.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,MainActivity2.class);
+                startActivity(intent);
+            }
+        });
 
 //pingButton
         findViewById(R.id.pingButton).setOnClickListener(new View.OnClickListener() {
@@ -90,6 +111,9 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             doPing();
+                            findSubnetDevices1();
+                            listadeDispositivos.setText( " oi ");
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -140,7 +164,15 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
+                            //ListView listView = (ListView) findViewById(R.id.listIPMAC);
+                            //ArrayAdapter adapter = new PlacasAdapter(this,0,findSubnetDevic());
+                           // ArrayList teste = findSubnetDevic();
+                           // for (int i=0;i < teste.size();i++){
+                             //   listadeDispositivos.setText(String.valueOf(teste.get(i)));
+                           // }
+                            //listView.setAdapter(adapter);
                             findSubnetDevices();
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -150,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
+//------------------------------------------------------------------------------------------
     private void appendResultsText(final String text) {
         runOnUiThread(new Runnable() {
             @Override
@@ -310,6 +342,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void findSubnetDevices() {
 
+
+
+        //final List<String> listaMAC = new ArrayList<Placas>();
+
         setEnabled(subnetDevicesButton, false);
 
         final long startTimeMillis = System.currentTimeMillis();
@@ -322,11 +358,43 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFinished(ArrayList<Device> devicesFound) {
+                ArrayList<Placas> listaIP = new ArrayList<Placas>();
                 float timeTaken =  (System.currentTimeMillis() - startTimeMillis)/1000.0f;
+
+                Placas  e;
                 appendResultsText("Devices Found: " + devicesFound.size());
-                appendResultsText("Finished "+timeTaken+" s");
+                for (int i=0; i<devicesFound.size();i++) {
+                    e = new Placas( devicesFound.get(i).ip, devicesFound.get(i).mac, " ON ");
+
+                    // Lista Global
+                    getList.add(i,e);
+                    //listadeDispositivos.setText(String.valueOf(devicesFound.get(i).ip)+" \n 1");
+                }
+
+                //listadeDispositivos.setText(String.valueOf(listaIP.get(0).getMac()));
+
+                //ListView listView = (ListView) findViewById(R.id.listIPMAC);
+                //ArrayAdapter adapter = new PlacasAdapter(listaIP,this);
+                //listView.setAdapter(adapter);
+
                 setEnabled(subnetDevicesButton, true);
-            }
+                //for (int i=0; i<devicesFound.size();i++){
+                    //new Placas(devicesFound.get(i).ip,devicesFound.get(i).mac," ON");
+                    //listaIP.add(devicesFound.get(i).ip);
+                    //listaMAC.add(devicesFound.get(i).mac);
+
+                    //listadeDispositivos.setText(String.valueOf(devicesFound.get(0).mac) + "\n"+devicesFound.get(1).mac +"\n"+ devicesFound.get(2).mac);
+
+                                    }
+                //listadeDispositivos.setText(String.valueOf(listaIP + "\n \n" + listaMAC));
+
+
+                //appendResultsText("Finished "+timeTaken+" s");
+
+            //}
+
+
+
         });
 
         // Below is example of how to cancel a running scan
@@ -353,4 +421,53 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+
+
+
+    private void findSubnetDevices1() {
+
+
+
+        //final List<String> listaMAC = new ArrayList<Placas>();
+
+        SubnetDevices subnetDevices = SubnetDevices.fromLocalAddress().findDevices(new SubnetDevices.OnSubnetDeviceFound() {
+            @Override
+            public void onDeviceFound(Device device) {
+                appendResultsText("Devia Cria a Lista: " + device.ip+" "+ device.hostname);
+            }
+
+            @Override
+            public void onFinished(ArrayList<Device> devicesFound) {
+
+            }
+
+
+            public  void onFinished1(ArrayList<Device> devicesFound) {
+                ArrayList<Placas> listaIP = new ArrayList<Placas>();
+
+                Placas  e;
+                appendResultsText("Devices Found: " + devicesFound.size());
+                for (int i=0; i<devicesFound.size();i++) {
+                    e = new Placas( devicesFound.get(i).ip, devicesFound.get(i).mac, " ON ");
+                    getList.add(i,e);
+
+                }
+                listadeDispositivos.setText(String.valueOf(getList.size()));
+
+
+
+
+
+
+            }
+
+
+
+
+        });
+
+
+
+    }
 }

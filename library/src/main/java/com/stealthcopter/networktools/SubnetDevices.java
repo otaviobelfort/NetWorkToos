@@ -33,6 +33,8 @@ public class SubnetDevices {
         void onDeviceFound(Device device);
 
         void onFinished(ArrayList<Device> devicesFound);
+
+
     }
 
     /**
